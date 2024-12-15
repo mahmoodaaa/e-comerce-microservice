@@ -3,6 +3,7 @@ package com.e_cmmerce.Order_Service.controller;
 import com.e_cmmerce.Order_Service.model.dto.Response.CustomerResponse;
 import com.e_cmmerce.Order_Service.model.dto.Response.OrderResponse;
 import com.e_cmmerce.Order_Service.model.dto.requsetDTO.OrderRequest;
+import com.e_cmmerce.Order_Service.model.dto.requsetDTO.UpdatePaymentRequest;
 import com.e_cmmerce.Order_Service.model.enums.PaymentMethod;
 import com.e_cmmerce.Order_Service.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(orderRequest));
     }
     @PutMapping("/update")
-    public ResponseEntity<OrderResponse> updatePaymentStatus(String id, PaymentMethod paymentMethod) {
+    public ResponseEntity<OrderResponse> updatePaymentStatus(String id, UpdatePaymentRequest paymentMethod) {
 
         return ResponseEntity.ok(orderService.updatePaymentStatus(id,paymentMethod));
     }
@@ -32,6 +33,7 @@ public class OrderController {
     }
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
+
         return ResponseEntity.ok(orderService.getAllOrders());
     }
       @PostMapping("/get-ids")

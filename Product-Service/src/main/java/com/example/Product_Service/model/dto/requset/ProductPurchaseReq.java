@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductPurchaseReq {
-    private String id;
+    private String productId;
     private Double quantity;
 
 

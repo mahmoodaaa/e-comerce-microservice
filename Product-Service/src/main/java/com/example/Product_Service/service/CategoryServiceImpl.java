@@ -10,7 +10,9 @@ import com.example.Product_Service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -30,5 +32,9 @@ public class CategoryServiceImpl implements CategoryService {
         throw new RecordNotFoundExciption(String.format("can not add product on database"));
     }
     }
-
+    @Override
+    public List<CategoryResponse> getAllCategory() {
+        return categoryRepository.findAll().stream()
+                .map(categoryMapper::toResponse).collect(Collectors.toList());
+    }
 }

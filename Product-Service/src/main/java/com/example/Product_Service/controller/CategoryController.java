@@ -8,10 +8,9 @@ import com.example.Product_Service.service.CategoryService;
 import com.example.Product_Service.service.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
@@ -23,4 +22,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.addCategory(reqDto));
 
     }
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> getAllCategory(){
+
+        return ResponseEntity.ok(categoryService.getAllCategory());
+
+
+    }
+
 }

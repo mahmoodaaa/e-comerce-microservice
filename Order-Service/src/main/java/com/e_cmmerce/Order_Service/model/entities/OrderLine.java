@@ -1,10 +1,12 @@
 package com.e_cmmerce.Order_Service.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -16,6 +18,7 @@ public class OrderLine {
     @Id
     private String id;
     private Order order;
-    private Long productId;
+    private String productId;
     private Double quantity;
+    private Double price;
 }

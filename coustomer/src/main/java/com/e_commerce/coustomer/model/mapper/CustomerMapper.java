@@ -4,8 +4,9 @@ import com.e_commerce.coustomer.model.dto.CustomerReqDto;
 import com.e_commerce.coustomer.model.dto.CustomerResponse;
 import com.e_commerce.coustomer.model.entity.Customer;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 public class CustomerMapper {
 
     public Customer toEntity(CustomerReqDto dto){

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductPurchaseResponse {
     private String productId;
-    private String name;
-    private String description;
-    private Double price;
     private Double quantity;
+    private Double price;
 }

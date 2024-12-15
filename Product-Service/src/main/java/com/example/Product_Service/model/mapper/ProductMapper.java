@@ -19,7 +19,6 @@ public class ProductMapper {
                 .category(category)
                 .build();
     }
-
     public  ProductResponse toResponse(Product product){
         return ProductResponse.builder()
                 .id(product.getId())
@@ -32,7 +31,6 @@ public class ProductMapper {
                 .categoryDescription(product.getCategory().getDescription())
                 .build();
     }
-
     public ProductPurchaseResponse purchaseResponse(Product product , Double quantity){
                  return ProductPurchaseResponse.builder()
                          .id(product.getId())
@@ -61,10 +59,6 @@ public class ProductMapper {
                 .categoryId(product.getCategory().getId())
                 .build();
     }
-
-
-
-
 }
 
 

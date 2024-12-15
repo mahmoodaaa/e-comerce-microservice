@@ -1,5 +1,7 @@
 package com.e_cmmerce.Order_Service.model.dto.requsetDTO;
 
+import com.e_cmmerce.Order_Service.model.entities.OrderLine;
+import com.e_cmmerce.Order_Service.model.enums.OrderStatus;
 import com.e_cmmerce.Order_Service.model.enums.PaymentMethod;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -16,12 +18,10 @@ import java.util.List;
 public class OrderRequest {
 
     private String customerId;
-    private List<ProductPurchaseReq> products;
-    @Positive(message = "Order amount should be posative ")
-    private Double totalAmount;
     private PaymentMethod paymentMethod;
-    private String reference;
-    private LocalDateTime createdAt;
+    private OrderStatus orderStatus ;
+    private List<ProductPurchaseReq> products;
+
 
 
 }

@@ -22,7 +22,7 @@ public interface ProductProxy {
     @GetMapping("/api/products/getPurchase/{id}")
     public ResponseEntity<List<ProductPurchaseResponse>> findPurchaseProductByIdInOrder(@PathVariable List<String> id);
 
-    @GetMapping("/api/products/")
+    @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> getAllProduct();
 
 

@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductPurchaseResponse>purchaseProduct(List<ProductPurchaseReq> purchaseReq){
 
            List<String>productsId = purchaseReq.stream()
-                   .map(productPurchaseReq -> productPurchaseReq.getId()).toList();
+                   .map(productPurchaseReq -> productPurchaseReq.getProductId()).toList();
 
             List<Product>storedProducts = productRepository.findAllByIdInOrderById(productsId);
            if(productsId.size()!=storedProducts.size()){
@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         // Sort the request list by product ID
         List<ProductPurchaseReq> sortedRequest = purchaseReq
                 .stream()
-                .sorted(Comparator.comparing(ProductPurchaseReq::getId))
+                .sorted(Comparator.comparing(ProductPurchaseReq::getProductId))
                 .toList();
 
         // Prepare the response list
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
             // Check stock availability
             if (product.getStock() < productRequest.getQuantity()) {
                 throw new RecordNotFoundExciption(
-                        "Insufficient stock quantity for product with ID: " + productRequest.getId()
+                        "Insufficient stock quantity for product with ID: " + productRequest.getProductId()
                 );
             }
             // Deduct the requested quantity

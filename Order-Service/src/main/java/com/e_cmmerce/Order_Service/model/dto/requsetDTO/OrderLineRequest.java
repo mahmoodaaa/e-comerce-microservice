@@ -14,5 +14,5 @@ public class OrderLineRequest {
     private String orderId;
     private String productId;
     private Double quantity;
-
+    private Double price;
 }
