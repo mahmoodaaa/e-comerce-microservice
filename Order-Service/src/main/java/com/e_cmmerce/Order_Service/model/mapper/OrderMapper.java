@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -57,6 +58,32 @@ public class OrderMapper {
                                 )
                                 .collect(Collectors.toList())
                 )
+                .build();
+    }
+
+    public  OrderResponse toOrderResponse(Order order) {
+        List<OrderLineResponse> itemResponses = order.getOrderLine().stream()
+                .map(OrderMapper::toOrderLineResponse)
+                .collect(Collectors.toList());
+
+        return OrderResponse.builder()
+                .id(order.getId())
+                .reference(order.getReference())
+                .totalAmount(order.getTotalAmount())
+                .paymentMethod(order.getPaymentMethod())
+                .orderStatus(OrderStatus.DELIVERED)
+                .customerId(order.getCustomerId())
+                .createdAt(order.getCreatedAt())
+                .build();
+    }
+
+
+    public static OrderLineResponse toOrderLineResponse(OrderLine orderLine) {
+        return OrderLineResponse.builder()
+                .id(orderLine.getId())
+                .productId(orderLine.getProductId())
+                .quantity(orderLine.getQuantity())
+                .price(orderLine.getPrice())
                 .build();
     }
 

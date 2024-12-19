@@ -20,14 +20,10 @@ public class CategoryController {
     @PostMapping("/add")
     public ResponseEntity<CategoryResponse> createProduct(@RequestBody CategoryReqDto reqDto) {
         return ResponseEntity.ok(categoryService.addCategory(reqDto));
-
     }
+
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategory(){
-
-        return ResponseEntity.ok(categoryService.getAllCategory());
-
-
-    }
-
+    public ResponseEntity<List<CategoryResponse>> getAll(){
+        return ResponseEntity.ok(categoryService.getAll());
+}
 }

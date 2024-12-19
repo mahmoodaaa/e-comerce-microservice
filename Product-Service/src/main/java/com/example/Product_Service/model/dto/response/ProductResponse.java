@@ -1,10 +1,13 @@
 package com.example.Product_Service.model.dto.response;
 
-import com.example.Product_Service.model.entity.Category;
+import com.example.Product_Service.model.dto.requset.ProductReqDto;
+import com.example.Product_Service.model.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder

@@ -8,7 +8,5 @@ import java.util.List;
 public interface CategoryService {
 
     public CategoryResponse addCategory(CategoryReqDto reqDto);
-
-    public List<CategoryResponse> getAllCategory();
-
+    public List<CategoryResponse> getAll();
 }

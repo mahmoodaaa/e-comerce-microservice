@@ -3,6 +3,7 @@ package com.example.Product_Service.service;
 import com.example.Product_Service.enums.ProductStatus;
 import com.example.Product_Service.error.RecordNotFoundExciption;
 import com.example.Product_Service.model.dto.requset.ProductPurchaseReq;
+import com.example.Product_Service.model.dto.requset.ProductUpdateRequest;
 import com.example.Product_Service.model.dto.response.ProductPurchaseResponse;
 import com.example.Product_Service.model.dto.requset.ProductReqDto;
 import com.example.Product_Service.model.dto.response.ProductResponse;
@@ -12,6 +13,9 @@ import com.example.Product_Service.model.mapper.ProductMapper;
 import com.example.Product_Service.repository.CategoryRepository;
 import com.example.Product_Service.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,14 +48,14 @@ public class ProductServiceImpl implements ProductService {
     }
     public List<ProductPurchaseResponse>purchaseProduct(List<ProductPurchaseReq> purchaseReq){
 
-           List<String>productsId = purchaseReq.stream()
-                   .map(productPurchaseReq -> productPurchaseReq.getProductId()).toList();
+        List<String>productsId = purchaseReq.stream()
+                .map(productPurchaseReq -> productPurchaseReq.getProductId()).toList();
 
-            List<Product>storedProducts = productRepository.findAllByIdInOrderById(productsId);
-           if(productsId.size()!=storedProducts.size()){
+        List<Product>storedProducts = productRepository.findAllByIdInOrderById(productsId);
+        if(productsId.size()!=storedProducts.size()){
 
-               throw new RecordNotFoundExciption("One or more product doesn't exits");
-           }
+            throw new RecordNotFoundExciption("One or more product doesn't exits");
+        }
         // Sort the request list by product ID
         List<ProductPurchaseReq> sortedRequest = purchaseReq
                 .stream()
@@ -84,15 +88,23 @@ public class ProductServiceImpl implements ProductService {
         }
         return purchasedProducts;
     }
+    public ProductResponse updateProduct(String id, ProductUpdateRequest dto) {
 
-    public ProductResponse updateProduct(String id, ProductReqDto dto) {
-        Product products = productRepository.findById(id).orElseThrow(() ->
-                new RecordNotFoundExciption("the id not found "));
-        products.setName(dto.getName());
-        products.setDescription(dto.getDescription());
-        products.setPrice(dto.getPrice());
+        Product existingProduct  = productRepository.findById(id).orElseThrow(() ->
+                new RecordNotFoundExciption("the id of product not found "  +id));
 
-        return productMapper.toResponse(productRepository.save(products));
+        existingProduct .setName(dto.getName());
+        existingProduct .setDescription(dto.getDescription());
+        existingProduct .setStock(dto.getStock());
+        existingProduct .setPrice(dto.getPrice());
+
+        if(dto.getCategoryId()!=null){
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new RecordNotFoundExciption("the Category not found " ));
+            existingProduct.getCategory().setId(dto.getCategoryId());
+        }
+
+        return productMapper.toResponse(productRepository.save(existingProduct ));
     }
     public ProductResponse getById(String id) {
         return productRepository.findById(id)
@@ -134,6 +146,56 @@ public class ProductServiceImpl implements ProductService {
                 new RecordNotFoundExciption("the id not found "));
         products.setProductStatus(ProductStatus.DELETED);
         return productMapper.toResponse(productRepository.save(products));
+
+    }
+
+    @Override
+    public List<ProductResponse> findProductsByCategoryId(String categoryId) {
+
+        return productRepository.findByCategory_Id(categoryId).stream()
+                .filter(product -> product.getProductStatus() != ProductStatus.DELETED)
+                .map(productMapper::toResponse).toList();
+    }
+
+
+    @Override
+    public ProductResponse searchByCategory( String categoryId) {
+
+          Category category = categoryRepository.findById(categoryId).orElseThrow(()->
+                  new RecordNotFoundExciption("the id not found "));
+
+          List<Product>products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+          List<ProductReqDto>productReqDtos = products.stream()
+                  .map(productMapper::toDto).collect(Collectors.toList());
+
+
+        return ProductResponse.builder()
+                .categoryId(category.getId())
+                .name(category.getName())
+                .description(category.getDescription())
+                .build();
+
+    }
+    @Override
+    public Page<ProductResponse> getPaginatedProducts(int page, int size) {
+
+      Pageable pageable = PageRequest.of(page,size);
+       Page<Product>productPage = productRepository.findAll(pageable);
+       return productPage.map(productMapper::toResponse);
+
+    }
+
+    @Override
+    public List<ProductResponse> findByPriceBetween(Double minPrice, Double maxPrice) {
+
+        try{
+            return productRepository.findByPriceBetween(minPrice,maxPrice).stream()
+                    .map(productMapper::toResponse).collect(Collectors.toList());
+
+         } catch (NoSuchElementException ex){
+        throw new RecordNotFoundExciption(String.format("can not find product price on database"));
+    }
 
     }
 }

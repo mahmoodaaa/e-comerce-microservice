@@ -23,7 +23,10 @@ public class OrderLineMapper {
     public OrderLineResponse toOrderLineResponse(OrderLine orderLine) {
         return OrderLineResponse.builder()
                 .id(orderLine.getId())
+                .productId(orderLine.getProductId())
                 .quantity(orderLine.getQuantity())
+                .price(orderLine.getPrice())
+
                 .build();
     }
 }

@@ -5,10 +5,7 @@ import com.e_cmmerce.Order_Service.model.dto.Response.CustomerResponse;
 import com.e_cmmerce.Order_Service.model.dto.Response.OrderLineResponse;
 import com.e_cmmerce.Order_Service.model.dto.Response.OrderResponse;
 import com.e_cmmerce.Order_Service.model.dto.Response.ProductPurchaseResponse;
-import com.e_cmmerce.Order_Service.model.dto.requsetDTO.OrderLineRequest;
-import com.e_cmmerce.Order_Service.model.dto.requsetDTO.OrderRequest;
-import com.e_cmmerce.Order_Service.model.dto.requsetDTO.ProductPurchaseReq;
-import com.e_cmmerce.Order_Service.model.dto.requsetDTO.UpdatePaymentRequest;
+import com.e_cmmerce.Order_Service.model.dto.requsetDTO.*;
 import com.e_cmmerce.Order_Service.model.entities.OrderLine;
 import com.e_cmmerce.Order_Service.model.enums.OrderStatus;
 import com.e_cmmerce.Order_Service.model.enums.PaymentMethod;
@@ -19,6 +16,9 @@ import com.e_cmmerce.Order_Service.repository.OrderLineRepository;
 import com.e_cmmerce.Order_Service.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.e_cmmerce.Order_Service.model.entities.Order;
@@ -121,7 +121,9 @@ public class OrderServiceImpl implements OrderService {
     }
     @Override
     public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll().stream()
+        List<Order>orders =  orderRepository.findAll();
+
+       return orders.stream()
                 .map(orderMapper::toResponse).collect(Collectors.toList());
     }
 
@@ -129,6 +131,41 @@ public class OrderServiceImpl implements OrderService {
          return customerProxy.getCustomersByIds(customerIds);
     }
 
+    @Override
+    public Page<OrderResponse> getAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+      Page<Order>orderPage =    orderRepository.findAll(pageable);
+         return orderPage.map(orderMapper::toResponse);
 
+    }
+
+    public List<OrderResponse> getOrderByPriceRange(Double minPrice, Double maxPrice){
+
+        try {
+            return orderRepository.findOrdersByPriceRange(minPrice, maxPrice).stream()
+                    .map(orderMapper::toOrderResponse).collect(Collectors.toList());
+
+        } catch (NoSuchElementException ex){
+            throw new RecordNotFoundExciption(String.format("can not find order price on database"));
+        }
+
+        }
+
+    @Override
+    public List<OrderResponse> searchOrder(SearchOrderRequest searchRequest) {
+
+        // Extract filter parameters
+        LocalDateTime startDate = searchRequest.getStartDate();
+        LocalDateTime endDate = searchRequest.getEndDate();
+        OrderStatus status = searchRequest.getOrderStatus();
+        PaymentMethod paymentMethod = searchRequest.getPaymentMethod();
+
+        List<Order> orders = orderRepository.searchOrders(startDate, endDate, status, paymentMethod);
+
+
+          return orders.stream().map(orderMapper::toResponse).collect(Collectors.toList());
+    }
 
 }
+
+
